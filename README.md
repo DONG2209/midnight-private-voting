@@ -28,7 +28,7 @@ running tally and verify it on chain; no one, including the contract itself, can
 - [CI/CD](#cicd)
 - [The frontend (sandbox dApp)](#the-frontend-sandbox-dapp)
 - [Going from sandbox to testnet](#going-from-sandbox-to-testnet)
-- [Live demo & video](#live-demo--video)
+- [Live demo](#live-demo)
 - [Submission checklist](#submission-checklist)
 
 ## What this is
@@ -221,16 +221,12 @@ installed compiler is `0.34.0`, the ledger is `9.1.0.0-rc.3`), and the exact pro
 part most likely to already be stale by the time you read this. Everything else in this README — the contract,
 its tests, and the CI pipeline — was executed in full while writing this submission.
 
-## Live demo & video
+## Live demo
 
-- **Live demo:** **<https://claude.ai/code/artifact/3d138538-bdc0-4370-8fbe-423eb42e9713>** — the exact
-  `frontend/dist/` build above, republished as a static page. Deploy a ballot, vote, and watch the tallies and raw
-  public ledger update in real time; nothing to install. (It's a Claude Artifact preview rather than a
-  project-owned domain — feel free to also deploy `frontend/dist/` to GitHub Pages/Vercel/Netlify for a
-  permanent, project-owned URL and swap it in here.)
-- **Demo video (≤1 min):** record `npm run dev --workspace frontend` (or the live demo above) walking through
-  deploy → vote → rejected double-vote → register admin → close ballot → the raw public-ledger panel, and link it
-  here: `TODO — add your video link`.
+**<https://midnight-private-voting-frontend-no.vercel.app/>** — deployed straight from this repo via `vercel.json`
+/ `scripts/vercel-build.sh` (installs the Compact toolchain, compiles the contract, builds the frontend — same
+steps as CI). Deploy a ballot, vote, and watch the tallies and raw public ledger update in real time; nothing to
+install, no wallet required.
 
 ## Submission checklist
 
@@ -238,13 +234,12 @@ its tests, and the CI pipeline — was executed in full while writing this submi
 |---|---|
 | Fully functional dApp using Midnight's privacy model | ✅ contract + sandbox frontend, both real and run in this repo |
 | Minimum 3 tests passing | ✅ 11 tests, see [Tests](#tests) |
-| CI/CD pipeline (workflow file + passing runs) | ✅ workflow committed — passing runs appear once pushed to GitHub |
+| CI/CD pipeline (workflow file + passing runs) | ✅ see the badge at the top of this file |
 | Approved idea from the provided list | ✅ Private Voting — see [PROPOSAL.md](./PROPOSAL.md) |
-| Public GitHub repo with complete README | ⬜ push this repo and make it public |
-| Live demo link | ✅ see [Live demo & video](#live-demo--video) |
+| Public GitHub repo with complete README | ✅ <https://github.com/DONG2209/midnight-private-voting> |
+| Live demo link | ✅ see [Live demo](#live-demo) |
 | Screenshot: 3+ tests passing | ✅ [`docs/screenshots/tests-passing.png`](./docs/screenshots/tests-passing.png) |
-| CI/CD badge or workflow with passing runs | ✅ badge above; will go green after the first push |
-| Demo video (1 min) | ⬜ record and add the link above |
+| CI/CD badge or workflow with passing runs | ✅ badge above |
 | README "privacy model" section | ✅ see [Privacy model](#privacy-model) |
 | Product proposal submitted | ✅ [PROPOSAL.md](./PROPOSAL.md) |
 | Minimum 10 meaningful commits | ✅ see `git log` |
