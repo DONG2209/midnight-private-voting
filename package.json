@@ -1,0 +1,23 @@
+{
+  "name": "private-voting-dapp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Level 3 — Private Voting: anonymous ballots with publicly verifiable tallies, built on Midnight.",
+  "license": "Apache-2.0",
+  "workspaces": [
+    "contract",
+    "frontend"
+  ],
+  "overrides": {
+    "vite": "^6.4.0",
+    "@swc/core": "1.12.14",
+    "@swc/wasm": "1.12.14"
+  },
+  "scripts": {
+    "compact": "npm run compact --workspace contract",
+    "test": "npm run test --workspace contract",
+    "test:compile": "npm run test:compile --workspace contract",
+    "typecheck": "npm run typecheck --workspace contract && npm run typecheck --workspace frontend",
+    "build": "npm run build --workspace contract && npm run build --workspace frontend"
+  }
+}
