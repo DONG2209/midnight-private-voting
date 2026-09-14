@@ -10,6 +10,10 @@ import wasm from 'vite-plugin-wasm';
 // the top-level `await` its instantiation glue code uses.
 export default defineConfig({
   plugins: [wasm(), topLevelAwait()],
+  // Relative asset URLs, so the build works when hosted under any subpath
+  // (a GitHub Pages project site, a preview URL, etc.), not just at a
+  // domain's root.
+  base: './',
   server: { port: 5173 },
   build: { target: 'esnext' },
 });

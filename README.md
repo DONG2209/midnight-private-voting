@@ -225,11 +225,14 @@ its tests, and the CI pipeline — was executed in full while writing this submi
 
 ## Live demo & video
 
-- **Live demo:** deploy `frontend/dist/` (see above) to a static host and put the URL here: `TODO — add your
-  deployed URL`.
-- **Demo video (≤1 min):** record `npm run dev --workspace frontend` walking through deploy → vote → rejected
-  double-vote → register admin → close ballot → the raw public-ledger panel, and link it here: `TODO — add your
-  video link`.
+- **Live demo:** **<https://claude.ai/code/artifact/3d138538-bdc0-4370-8fbe-423eb42e9713>** — the exact
+  `frontend/dist/` build above, republished as a static page. Deploy a ballot, vote, and watch the tallies and raw
+  public ledger update in real time; nothing to install. (It's a Claude Artifact preview rather than a
+  project-owned domain — feel free to also deploy `frontend/dist/` to GitHub Pages/Vercel/Netlify for a
+  permanent, project-owned URL and swap it in here.)
+- **Demo video (≤1 min):** record `npm run dev --workspace frontend` (or the live demo above) walking through
+  deploy → vote → rejected double-vote → register admin → close ballot → the raw public-ledger panel, and link it
+  here: `TODO — add your video link`.
 
 ## Submission checklist
 
@@ -240,7 +243,7 @@ its tests, and the CI pipeline — was executed in full while writing this submi
 | CI/CD pipeline (workflow file + passing runs) | ✅ workflow committed — passing runs appear once pushed to GitHub |
 | Approved idea from the provided list | ✅ Private Voting — see [PROPOSAL.md](./PROPOSAL.md) |
 | Public GitHub repo with complete README | ⬜ push this repo and make it public |
-| Live demo link | ⬜ deploy `frontend/dist/` and add the link above |
+| Live demo link | ✅ see [Live demo & video](#live-demo--video) |
 | Screenshot: 3+ tests passing | ✅ [`docs/screenshots/tests-passing.png`](./docs/screenshots/tests-passing.png) |
 | CI/CD badge or workflow with passing runs | ✅ badge above; will go green after the first push |
 | Demo video (1 min) | ⬜ record and add the link above |
