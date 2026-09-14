@@ -4,6 +4,9 @@
   "private": true,
   "description": "Level 3 — Private Voting: anonymous ballots with publicly verifiable tallies, built on Midnight.",
   "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22"
+  },
   "workspaces": [
     "contract",
     "frontend"
@@ -18,6 +21,7 @@
     "test": "npm run test --workspace contract",
     "test:compile": "npm run test:compile --workspace contract",
     "typecheck": "npm run typecheck --workspace contract && npm run typecheck --workspace frontend",
-    "build": "npm run build --workspace contract && npm run build --workspace frontend"
+    "build": "npm run build --workspace contract && npm run build --workspace frontend",
+    "vercel-build": "bash scripts/vercel-build.sh"
   }
 }
