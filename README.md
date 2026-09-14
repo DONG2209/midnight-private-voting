@@ -188,16 +188,20 @@ See the badge at the top of this file for the latest run.
 
 - Detects and connects to a Midnight-compatible wallet via `@midnight-ntwrk/dapp-connector-api`
   (`frontend/src/wallet.ts`) — real detection/connect code, exercised against whatever wallet extension you have
-  installed.
+  installed. **[Lace](https://www.lace.io/) (Midnight preview build)** is currently the only wallet that injects
+  this API; wallets from other chains (e.g. Freighter for Stellar, MetaMask for Ethereum) won't show up under
+  "Detect wallets" — that's expected, not a bug. Set Lace to **Testnet** in its network settings before connecting.
 - Runs the **same compiled contract** as the tests, entirely client-side, so you can deploy a ballot, switch
   between voter identities, cast votes, watch double-voting get rejected, register an admin, and close the
-  ballot — all with zero backend infrastructure.
+  ballot — all with zero backend infrastructure. This part needs no wallet at all — it's the sandbox described
+  throughout this README, kept deliberately separate from the wallet-connect flow above (see
+  [Going from sandbox to testnet](#going-from-sandbox-to-testnet)).
 - Renders the raw public ledger of your ballot in a JSON panel, so the privacy claims above are something you can
   literally read off the screen rather than take on faith.
 
 Because it's 100% client-side and static, `npm run build --workspace frontend` produces a `frontend/dist/` you
 can host anywhere static files are welcome (GitHub Pages, Vercel, Netlify, S3) with no server-side component —
-that's what should sit behind your live demo link.
+see [Live demo](#live-demo) for the deployed instance.
 
 ## Going from sandbox to testnet
 
