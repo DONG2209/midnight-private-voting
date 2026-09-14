@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Private Voting — Midnight Level 3</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <p class="eyebrow">Midnight · Level 3 · Private Voting</p>
+        <h1>Anonymous ballots, publicly verifiable tallies</h1>
+        <p class="lede">
+          Every vote below is proven and executed by the real, compiled
+          <code>private-voting.compact</code> contract, running client-side via
+          <code>@midnight-ntwrk/compact-runtime</code> — no server required. See
+          <a href="#privacy">what an observer can and cannot learn</a>.
+        </p>
+      </header>
+
+      <section class="card" id="wallet-card">
+        <h2>1 · Wallet connection</h2>
+        <p class="muted">
+          Detects a Midnight-compatible wallet (e.g. Lace) via the DApp Connector API. Connecting proves the wiring
+          works; casting a vote below does not yet require it (see <a href="#going-live">§ Going to testnet</a>).
+        </p>
+        <div class="row">
+          <button id="detect-wallet-btn">Detect wallets</button>
+          <span id="wallet-status" class="status">not connected</span>
+        </div>
+        <ul id="wallet-list" class="wallet-list"></ul>
+      </section>
+
+      <section class="card" id="ballot-card">
+        <h2>2 · The ballot</h2>
+        <div id="deploy-row" class="row">
+          <input id="title-input" type="text" placeholder="e.g. Adopt the new charter?" value="Adopt the new community charter?" />
+          <button id="deploy-btn">Deploy new ballot</button>
+        </div>
+        <div id="ballot-view" hidden>
+          <div class="ballot-header">
+            <div>
+              <h3 id="ballot-title"></h3>
+              <span id="ballot-status" class="badge"></span>
+            </div>
+            <button id="new-ballot-btn" class="link-btn">deploy a different ballot</button>
+          </div>
+
+          <div class="tallies">
+            <div class="tally"><span class="tally-label">YES</span><div class="bar"><div id="bar-yes" class="bar-fill yes"></div></div><span id="count-yes" class="tally-count">0</span></div>
+            <div class="tally"><span class="tally-label">NO</span><div class="bar"><div id="bar-no" class="bar-fill no"></div></div><span id="count-no" class="tally-count">0</span></div>
+            <div class="tally"><span class="tally-label">ABSTAIN</span><div class="bar"><div id="bar-abstain" class="bar-fill abstain"></div></div><span id="count-abstain" class="tally-count">0</span></div>
+          </div>
+          <p class="muted" id="ballot-meta"></p>
+        </div>
+      </section>
+
+      <section class="card" id="voter-card" hidden>
+        <h2>3 · Vote as a voter</h2>
+        <div class="row">
+          <span class="muted">Acting as</span>
+          <strong id="voter-fingerprint" class="fingerprint"></strong>
+          <button id="new-voter-btn" class="link-btn">switch to a new voter</button>
+        </div>
+        <div class="row">
+          <button id="vote-yes-btn" class="choice yes">Vote YES</button>
+          <button id="vote-no-btn" class="choice no">Vote NO</button>
+          <button id="vote-abstain-btn" class="choice abstain">Abstain</button>
+        </div>
+      </section>
+
+      <section class="card" id="admin-card" hidden>
+        <h2>4 · Ballot admin</h2>
+        <div class="row">
+          <span class="muted">Admin identity</span>
+          <strong id="admin-fingerprint" class="fingerprint"></strong>
+        </div>
+        <div class="row">
+          <button id="register-admin-btn">Register as admin</button>
+          <button id="close-ballot-btn">Close ballot</button>
+        </div>
+      </section>
+
+      <section class="card" id="log-card">
+        <h2>Activity log</h2>
+        <ol id="log-list" class="log"></ol>
+      </section>
+
+      <section class="card" id="observer-card">
+        <h2>What an on-chain observer literally sees</h2>
+        <p class="muted">This is the entire public ledger of the ballot above — nothing more, nothing less.</p>
+        <pre id="observer-view" class="observer">deploy a ballot to see its public ledger here</pre>
+      </section>
+
+      <section class="card" id="privacy">
+        <h2>Privacy model</h2>
+        <div class="privacy-grid">
+          <div>
+            <h3>An observer CAN learn</h3>
+            <ul>
+              <li>The ballot's title and open/closed status</li>
+              <li>The running YES / NO / ABSTAIN tallies, updated after every vote</li>
+              <li>How many distinct ballots have been cast in total</li>
+              <li>The raw set of nullifiers used so far (opaque 32-byte values)</li>
+              <li>That <em>some</em> vote just changed the tally in a given direction</li>
+            </ul>
+          </div>
+          <div>
+            <h3>An observer CANNOT learn</h3>
+            <ul>
+              <li>Which wallet or person cast any particular ballot</li>
+              <li>Which of the tally changes belongs to which nullifier</li>
+              <li>Whether the same person voted in two <em>different</em> ballots — nullifiers are domain-separated per ballot</li>
+              <li>The admin's secret key — only a one-way hash of it is ever public</li>
+            </ul>
+          </div>
+        </div>
+        <p class="muted" id="going-live">
+          <strong>Going from sandbox to testnet:</strong> this page runs the contract locally in your browser.
+          Submitting these same circuit calls to a live Midnight network additionally requires a deployed contract
+          address plus wallet, indexer, and proof-server providers wired through
+          <code>@midnight-ntwrk/midnight-js-contracts</code> — see the README for the exact steps and current
+          links to Midnight's docs.
+        </p>
+      </section>
+
+      <footer class="foot">
+        <a href="https://docs.midnight.network" target="_blank" rel="noreferrer">Midnight docs</a>
+        ·
+        <a href="../README.md">Project README</a>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
