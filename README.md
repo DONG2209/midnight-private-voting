@@ -46,7 +46,7 @@ what changes when you point this at a live Midnight network.
 ## Repository layout
 
 ```
-level3/
+.
 ├── contract/                  Compact contract + TypeScript test suite
 │   ├── src/private-voting.compact
 │   ├── src/witnesses.ts       Private-state / witness plumbing
@@ -56,7 +56,7 @@ level3/
 │   └── src/main.ts
 ├── docs/screenshots/          Test-output screenshot for the submission checklist
 ├── PROPOSAL.md                 Product proposal (required reading before the code)
-└── .github/workflows/level3-ci.yml   (repo root) — compile + test on every push
+└── .github/workflows/level3-ci.yml   compile + test on every push
 ```
 
 This is an npm workspaces monorepo (`contract` + `frontend`) so the frontend can import the contract package
@@ -74,7 +74,6 @@ source ~/.bashrc   # or ~/.zshrc
 compact update 0.34.0
 
 # 2. Install workspace dependencies
-cd level3
 npm install
 
 # 3. Compile the contract, then run the tests
@@ -87,7 +86,7 @@ npm run dev --workspace frontend   # http://localhost:5173
 
 ## Scripts
 
-Run from `level3/` unless noted.
+Run from the repo root unless noted.
 
 | Command | What it does |
 |---|---|
@@ -172,8 +171,7 @@ why they're fast enough to run on every push.
 
 ## CI/CD
 
-[`.github/workflows/level3-ci.yml`](../.github/workflows/level3-ci.yml) (repo root) runs on every push and pull
-request that touches `level3/`:
+[`.github/workflows/level3-ci.yml`](./.github/workflows/level3-ci.yml) runs on every push and pull request:
 
 1. Installs the real Compact toolchain (same installer command as above).
 2. `npm ci` — installs workspace dependencies from the committed lockfile.
