@@ -1,0 +1,111 @@
+// SPDX-License-Identifier: Apache-2.0
+//
+// Private Voting — anonymous ballots with publicly verifiable tallies.
+//
+// Public (on-chain) state:
+//   - the ballot title, its open/closed status, and the running tallies
+//   - the set of nullifiers that have already voted (opaque 32-byte values)
+//   - a public commitment to the ballot admin's identity
+//
+// Private (off-chain) state, supplied as witnesses and NEVER written to the
+// ledger in the clear:
+//   - each voter's personal secret key
+//   - the ballot admin's secret key
+//
+// See ../../README.md ("Privacy model") for exactly what an on-chain
+// observer can and cannot learn from this contract.
+
+pragma language_version >= 0.16;
+
+import CompactStandardLibrary;
+
+export enum BallotStatus { OPEN, CLOSED }
+export enum Choice { YES, NO, ABSTAIN }
+
+export ledger title: Opaque<'string'>;
+export ledger status: BallotStatus;
+export ledger yesVotes: Counter;
+export ledger noVotes: Counter;
+export ledger abstainVotes: Counter;
+export ledger ballotsCast: Counter;
+// One entry per voter who has already cast a ballot. Each entry is a
+// pseudonymous nullifier, not a public key or address, so membership in this
+// set never identifies who cast it.
+export ledger nullifiers: Set<Bytes<32>>;
+// persistentHash of the admin's secret key, set once via registerAdmin().
+// Lets closeBallot authenticate the admin without ever putting their secret
+// key (or any signature over it) on chain.
+export ledger adminCommitment: Bytes<32>;
+export ledger adminRegistered: Boolean;
+
+witness voterSecretKey(): Bytes<32>;
+witness adminSecretKey(): Bytes<32>;
+
+constructor(proposalTitle: Opaque<'string'>) {
+  title = disclose(proposalTitle);
+  status = BallotStatus.OPEN;
+  adminRegistered = false;
+}
+
+// Mixes in this contract's own address (kernel.self()) so that the same
+// voter secret key produces UNRELATED nullifiers in different ballot
+// deployments (no cross-ballot linkability), while still colliding with
+// itself for repeat calls inside the SAME ballot (double-vote prevention).
+circuit voteNullifier(sk: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>([
+    pad(32, "private-voting:nul:"),
+    kernel.self().bytes,
+    sk
+  ]);
+}
+
+circuit adminHash(sk: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>([
+    pad(32, "private-voting:admin:"),
+    kernel.self().bytes,
+    sk
+  ]);
+}
+
+// Cast one anonymous ballot. The circuit proves, in zero knowledge, that the
+// caller knows a secret key whose nullifier has not been used before — it
+// reveals nothing else about the caller's identity.
+export circuit castVote(choice: Choice): [] {
+  assert(status == BallotStatus.OPEN, "voting is closed");
+
+  const nul = disclose(voteNullifier(voterSecretKey()));
+  assert(!nullifiers.member(nul), "this voter has already cast a ballot");
+  nullifiers.insert(nul);
+  ballotsCast.increment(1);
+
+  const revealedChoice = disclose(choice);
+  if (revealedChoice == Choice.YES) {
+    yesVotes.increment(1);
+  } else if (revealedChoice == Choice.NO) {
+    noVotes.increment(1);
+  } else {
+    abstainVotes.increment(1);
+  }
+}
+
+// Binds whoever calls this first, right after deployment, as the ballot
+// admin, by publishing a commitment to their secret key. The secret key
+// itself never appears on chain — only a one-way hash of it.
+export circuit registerAdmin(): [] {
+  assert(!adminRegistered, "an admin is already registered for this ballot");
+  adminCommitment = disclose(adminHash(adminSecretKey()));
+  adminRegistered = true;
+}
+
+// Only whoever holds the admin secret key matching adminCommitment can close
+// the ballot. The secret key itself is never disclosed — only the fact that
+// the caller knows it.
+export circuit closeBallot(): [] {
+  assert(status == BallotStatus.OPEN, "ballot already closed");
+  assert(adminRegistered, "no admin has been registered for this ballot");
+  assert(
+    disclose(adminHash(adminSecretKey())) == adminCommitment,
+    "not authorized to close this ballot"
+  );
+  status = BallotStatus.CLOSED;
+}
